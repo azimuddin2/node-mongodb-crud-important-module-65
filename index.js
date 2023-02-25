@@ -20,7 +20,6 @@ async function run() {
         // POST user: add a new user
         app.post('/user', async (req, res) => {
             const newUser = req.body;
-            console.log('adding new user', newUser);
             const result = await usersCollection.insertOne(newUser);
             res.send(result);
         });
@@ -31,7 +30,7 @@ async function run() {
             const cursor = usersCollection.find(query);
             const result = await cursor.toArray();
             res.send(result);
-        })
+        });
 
         // Delete a user
         app.delete('/user/:id', async (req, res) => {
@@ -39,7 +38,7 @@ async function run() {
             const query = { _id: ObjectId(id) };
             const result = await usersCollection.deleteOne(query);
             res.send(result);
-        })
+        });
 
         // get a user
         app.get('/user/:id', async (req, res) => {
@@ -47,23 +46,23 @@ async function run() {
             const query = { _id: ObjectId(id) };
             const result = await usersCollection.findOne(query);
             res.send(result);
-        })
+        });
 
         // update user
         app.put('/user/:id', async (req, res) => {
             const id = req.params.id;
-            const updatedUser = req.body;
             const query = { _id: ObjectId(id) };
+            const user = req.body;
             const options = { upsert: true };
             const updatedDoc = {
                 $set: {
-                    name: updatedUser.name,
-                    email: updatedUser.email
+                    name: user.name,
+                    email: user.email
                 }
             }
             const result = await usersCollection.updateOne(query, updatedDoc, options);
             res.send(result);
-        })
+        });
 
     }
     finally {
